@@ -1,0 +1,9 @@
+{
+  "name": "eh-for-me-backend",
+  "version": "1.0.0",
+  "description": "Backend API for the eh-for-meh mobile app.",
+  "main": "src/index.ts",
+  "author": "Kirin Patel <kirinpatel@gmail.com>",
+  "license": "MIT",
+  "private": true
+}
