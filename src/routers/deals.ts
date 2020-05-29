@@ -1,5 +1,6 @@
 import fetch from "node-fetch";
 import { Request, Response } from "express";
+import * as DealsController from "../controllers/deals";
 import { MEH_API_URL } from "../lib/constants";
 import { MehAPIResponse } from "../lib/types";
 
@@ -16,7 +17,8 @@ export const getCurrent = async (_: Request, res: Response) => {
       throw response;
     }
     const json = await response.json() as MehAPIResponse;
-    // TODO: write data to database
+    await DealsController.insertOrUpdate(json.deal);
+    // TODO: write other json to database
     res.status(200).json(json);
   } catch (err) {
     console.error("[DEAL] getCurrent:", err);

@@ -1,4 +1,5 @@
 export type Deal = {
+  created_at?: string;
   features: string;
   id: string;
   items: DealItem[];
@@ -8,7 +9,7 @@ export type Deal = {
     maximumLimit?: number;
     minimumLimit?: number;
   };
-  soldOutAt?: Date;
+  soldOutAt?: string;
   specifications: string;
   story: DealStory;
   theme: DealTheme;
@@ -23,7 +24,7 @@ export type DealItem = {
 };
 
 export type DealLaunch = {
-  soldOutAt?: Date;
+  soldOutAt?: string;
 };
 
 export type DealTheme = {
@@ -47,7 +48,7 @@ export type MehAPIResponse = {
 export type Poll = {
   answers: PollAnswer[];
   id: string;
-  startDate: Date;
+  startDate: string;
   title: string;
   topic: Topic;
 };
@@ -60,7 +61,7 @@ export type PollAnswer = {
 
 export type Topic = {
   commentCount: number;
-  createdAt: Date;
+  createdAt: string;
   id: string;
   replyCount: number;
   url: string;
@@ -69,7 +70,7 @@ export type Topic = {
 
 export type Video = {
   id: string;
-  startDate: Date;
+  startDate: string;
   title: string;
   url: string;
   topic: Topic;
