@@ -3,8 +3,8 @@ import { config } from "dotenv";
 
 config();
 
-import * as HealthController from "./controllers/health";
-import * as DealsController from "./controllers/deals";
+import * as HealthController from "./routers/health";
+import * as DealsController from "./routers/deals";
 
 const PORT = process.env.PORT || "8080";
 
