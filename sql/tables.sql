@@ -64,11 +64,12 @@ CREATE TABLE videos (
 
 -- all
 CREATE TABLE topics (
-  id SERIAL PRIMARY KEY NOT NULL UNIQUE,
+  id TEXT PRIMARY KEY NOT NULL UNIQUE,
+  comment_count INTEGER NOT NULL,
+  created_at TIMESTAMP NOT NULL,
   deal_id VARCHAR(18) REFERENCES deals(id),
-  form_url TEXT NOT NULL,
-  start_timestamp TIMESTAMP,
-  title TEXT NOT NULL,
+  url TEXT NOT NULL,
+  reply_count INTEGER NOT NULL,
   poll_id VARCHAR(18) REFERENCES polls(id),
   video_id VARCHAR(18) REFERENCES videos(id),
   vote_count INTEGER NOT NULL

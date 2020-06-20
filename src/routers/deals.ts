@@ -4,6 +4,7 @@ import * as DealItemsController from "../controllers/dealItems";
 import * as DealsController from "../controllers/deals";
 import * as DealThemesController from "../controllers/dealThemes";
 import * as DealStoriesController from "../controllers/dealStories";
+import * as TopicsController from "../controllers/topics";
 import { MEH_API_URL } from "../lib/constants";
 import { MehAPIResponse, DealItem } from "../lib/types";
 
@@ -47,6 +48,10 @@ export const updateCurrentDealInDatabase = async (
       DealStoriesController.insertOrUpdate(json.deal.id, json.deal.story),
       json.deal.items.map((item: DealItem) =>
         DealItemsController.insertOrUpdate(json.deal.id, item)
+      ),
+      TopicsController.insertOrUpdate(
+        { dealId: json.deal.id },
+        json.deal.topic
       ),
     ]);
     res.status(200).send();

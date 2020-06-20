@@ -4,6 +4,7 @@ import { QueryResult } from "pg";
 import { getClient, toTimestamp } from "./database";
 import { Deal } from "../lib/types";
 import * as DealItemsController from "./dealItems";
+import * as TopicsController from "../controllers/topics";
 
 const getCurrentDealSQL: string = fs.readFileSync(
   path.join(__dirname, "../../sql/getCurrentDeal.sql"),
@@ -31,7 +32,7 @@ export const getCurrent = async (): Promise<Deal> => {
           id: data.id,
           items: await DealItemsController.getForDeal(data.id),
           photos: data.photos,
-          soldOutAt: data.soldOutAt,
+          soldOutAt: data.sold_out_at,
           specifications: data.specifications,
           theme: {
             accentColor: data.accentColor,
@@ -40,14 +41,7 @@ export const getCurrent = async (): Promise<Deal> => {
             foreground: data.foreground,
           },
           title: data.title,
-          topic: {
-            id: "",
-            createdAt: "",
-            commentCount: 0,
-            replyCount: 0,
-            voteCount: 0,
-            url: "",
-          },
+          topic: await TopicsController.getForDeal(data.id),
           story: {
             body: data.storyBody,
             title: data.storyTitle,

@@ -24,7 +24,7 @@ export const getForDeal = async (dealId: string): Promise<DealItem[]> => {
         if (err) {
           reject(err);
         }
-        const items = result.rows.map((row: any) => {
+        const items: DealItem[] = result.rows.map((row: any) => {
           return {
             attributes: row.attributes.map((attribute: string) =>
               JSON.parse(attribute)

@@ -1,0 +1,1 @@
+SELECT * FROM topics WHERE deal_id = $1;
