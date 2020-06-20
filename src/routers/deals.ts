@@ -10,6 +10,24 @@ import { MehAPIResponse, DealItem } from "../lib/types";
 
 const MEH_API_KEY: string | undefined = process.env.MEH_API_KEY;
 
+export const get = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const deal = await DealsController.getDeal(id);
+    res.status(200).json(deal);
+  } catch (err) {
+    switch (err.message) {
+      case "No deal found!":
+        res.status(404).send();
+        break;
+      default:
+        console.error("[DEAL] get:", err);
+        res.status(500).send();
+        break;
+    }
+  }
+};
+
 export const getCurrent = async (_: Request, res: Response) => {
   try {
     const deal = await DealsController.getCurrent();
