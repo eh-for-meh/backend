@@ -74,3 +74,15 @@ CREATE TABLE topics (
   video_id VARCHAR(18) REFERENCES videos(id),
   vote_count INTEGER NOT NULL
 );
+
+CREATE TABLE route_logs (
+  id SERIAL PRIMARY KEY NOT NULL UNIQUE,
+  route TEXT NOT NULL,
+  method TEXT NOT NULL,
+  requested_at TIMESTAMP DEFAULT now(),
+  browser TEXT NOT NULL,
+  version TEXT NOT NULL,
+  os TEXT NOT NULL,
+  platform TEXT NOT NULL,
+  source TEXT NOT NULL
+);
