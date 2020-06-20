@@ -1,6 +1,8 @@
 import fetch from "node-fetch";
 import { Request, Response } from "express";
 import * as DealsController from "../controllers/deals";
+import * as DealThemesController from "../controllers/dealThemes";
+import * as DealStoriesController from "../controllers/dealStories";
 import { MEH_API_URL } from "../lib/constants";
 import { MehAPIResponse } from "../lib/types";
 
@@ -42,7 +44,11 @@ export const updateCurrentDealInDatabase = async (
     }
     const json = (await response.json()) as MehAPIResponse;
     json.deal.created_at = new Date().toISOString();
-    await DealsController.insertOrUpdate(json.deal);
+    await Promise.all([
+      DealsController.insertOrUpdate(json.deal),
+      DealThemesController.insertOrUpdate(json.deal.id, json.deal.theme),
+      DealStoriesController.insertOrUpdate(json.deal.id, json.deal.story),
+    ]);
     res.status(200).send();
   } catch (err) {
     console.error("[DEAL] getCurrent:", err);

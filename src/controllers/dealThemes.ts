@@ -2,26 +2,6 @@ import { QueryResult } from "pg";
 import { getClient } from "./database";
 import { DealTheme } from "../lib/types";
 
-export const getForDeal = async (dealId: string): Promise<DealTheme> => {
-  const client = await getClient();
-  return new Promise((resolve, reject) => {
-    client.query(
-      `SELECT accent_color as accentColor, background_color as backgroundColor, background_photo_url as backgroundImage, foreground FROM deal_themes WHERE deal_id = $1;`,
-      [dealId],
-      (err: Error, result: QueryResult) => {
-        client.release(true);
-        if (err) {
-          reject(err);
-        } else if (result.rowCount === 0) {
-          reject(new Error("No deal theme found!"));
-        } else {
-          resolve(result.rows[0] as DealTheme);
-        }
-      }
-    );
-  });
-};
-
 export const insertOrUpdate = async (
   dealId: string,
   theme: DealTheme
