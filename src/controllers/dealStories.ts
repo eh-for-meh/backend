@@ -1,6 +1,13 @@
+import fs from "fs";
+import path from "path";
 import { QueryResult } from "pg";
 import { getClient } from "./database";
 import { DealStory } from "../lib/types";
+
+const insertOrUpdateDealStorySQL: string = fs.readFileSync(
+  path.join(__dirname, "../../sql/insertOrUpdateDealStory.sql"),
+  { encoding: "utf-8" }
+);
 
 export const insertOrUpdate = async (
   dealId: string,
@@ -9,9 +16,7 @@ export const insertOrUpdate = async (
   const client = await getClient();
   return new Promise((resolve, reject) => {
     client.query(
-      `INSERT INTO deal_stories(deal_id, body, title) VALUES($1, $2, $3)
-      ON CONFLICT (deal_id)
-      DO UPDATE SET body = $2, title = $3;`,
+      insertOrUpdateDealStorySQL,
       [dealId, story.body, story.title],
       (err: Error, _: QueryResult) => {
         client.release(true);
