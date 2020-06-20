@@ -15,8 +15,15 @@ export const getCurrent = async (_: Request, res: Response) => {
     const deal = await DealsController.getCurrent();
     res.status(200).json(deal);
   } catch (err) {
-    console.error("[DEAL] getCurrent:", err);
-    res.status(500).send();
+    switch (err.message) {
+      case "No deal found!":
+        res.status(404).send();
+        break;
+      default:
+        console.error("[DEAL] getCurrent:", err);
+        res.status(500).send();
+        break;
+    }
   }
 };
 
