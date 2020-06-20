@@ -18,7 +18,6 @@ export const getCurrent = async (): Promise<Deal> => {
           reject(new Error("No deal found!"));
         } else {
           const data = result.rows[0];
-          console.log(Object.keys(data));
           const deal: Deal = {
             created_at: data.created_at,
             features: data.features,
