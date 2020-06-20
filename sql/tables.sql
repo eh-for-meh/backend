@@ -11,8 +11,10 @@ CREATE TABLE deals (
 );
 
 CREATE TABLE deal_items (
-  id SERIAL PRIMARY KEY NOT NULL UNIQUE,
+  attributes TEXT[] NOT NULL,
+  id TEXT PRIMARY KEY NOT NULL UNIQUE,
   deal_id VARCHAR(18) NOT NULL REFERENCES deals(id),
+  photo_url TEXT NOT NULL,
   price SMALLINT NOT NULL
 );
 
