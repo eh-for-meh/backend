@@ -3,11 +3,11 @@ CREATE TABLE deals (
   id VARCHAR(18) PRIMARY KEY NOT NULL UNIQUE,
   created_at TIMESTAMP DEFAULT now(),
   features TEXT NOT NULL,
-  form_url TEXT NOT NULL,
   photo_urls TEXT[] NOT NULL,
   sold_out_at TIMESTAMP,
   specifications TEXT NOT NULL,
-  title TEXT NOT NULL
+  title TEXT NOT NULL,
+  url TEXT NOT NULL
 );
 
 CREATE TABLE deal_items (
