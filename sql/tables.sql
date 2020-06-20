@@ -18,7 +18,7 @@ CREATE TABLE deal_items (
 
 CREATE TABLE deal_stories (
   id SERIAL PRIMARY KEY NOT NULL UNIQUE,
-  deal_id VARCHAR(18) NOT NULL REFERENCES deals(id),
+  deal_id VARCHAR(18) NOT NULL REFERENCES deals(id) UNIQUE,
   body TEXT NOT NULL,
   title TEXT NOT NULL
 );
@@ -30,7 +30,7 @@ CREATE TABLE deal_themes (
   accent_color VARCHAR(7) NOT NULL,
   background_color VARCHAR(7) NOT NULL,
   background_photo_url TEXT NOT NULL,
-  deal_id VARCHAR(18) NOT NULL REFERENCES deals(id),
+  deal_id VARCHAR(18) NOT NULL REFERENCES deals(id) UNIQUE,
   foreground foreground_color NOT NULL
 );
 
