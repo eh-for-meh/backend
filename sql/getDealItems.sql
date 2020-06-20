@@ -1,0 +1,1 @@
+SELECT * FROM deal_items WHERE deal_id = $1;

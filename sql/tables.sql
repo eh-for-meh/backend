@@ -10,8 +10,11 @@ CREATE TABLE deals (
   url TEXT NOT NULL
 );
 
+CREATE TYPE deal_item_condition AS ENUM ('New', 'Refurbished');
+
 CREATE TABLE deal_items (
   attributes TEXT[] NOT NULL,
+  condition deal_item_condition NOT NULL,
   id TEXT PRIMARY KEY NOT NULL UNIQUE,
   deal_id VARCHAR(18) NOT NULL REFERENCES deals(id),
   photo_url TEXT NOT NULL,

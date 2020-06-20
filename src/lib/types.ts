@@ -3,7 +3,6 @@ export type Deal = {
   features: string;
   id: string;
   items: DealItem[];
-  launches: DealLaunch[];
   photos: string[];
   purchaseQuantity?: {
     maximumLimit?: number;
@@ -19,12 +18,11 @@ export type Deal = {
 };
 
 export type DealItem = {
+  attributes: Record<string, string>[];
   condition: "New" | "Refurbished";
   id: string;
-};
-
-export type DealLaunch = {
-  soldOutAt?: string;
+  photo: string;
+  price: number;
 };
 
 export type DealTheme = {

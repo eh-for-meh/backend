@@ -1,18 +1,15 @@
 import fetch from "node-fetch";
 import { Request, Response } from "express";
+import * as DealItemsController from "../controllers/dealItems";
 import * as DealsController from "../controllers/deals";
 import * as DealThemesController from "../controllers/dealThemes";
 import * as DealStoriesController from "../controllers/dealStories";
 import { MEH_API_URL } from "../lib/constants";
-import { MehAPIResponse } from "../lib/types";
+import { MehAPIResponse, DealItem } from "../lib/types";
 
 const MEH_API_KEY: string | undefined = process.env.MEH_API_KEY;
 
 export const getCurrent = async (_: Request, res: Response) => {
-  if (typeof MEH_API_KEY === "undefined" || MEH_API_KEY.length === 0) {
-    res.status(500).send();
-    return;
-  }
   try {
     const deal = await DealsController.getCurrent();
     res.status(200).json(deal);
@@ -48,6 +45,9 @@ export const updateCurrentDealInDatabase = async (
       DealsController.insertOrUpdate(json.deal),
       DealThemesController.insertOrUpdate(json.deal.id, json.deal.theme),
       DealStoriesController.insertOrUpdate(json.deal.id, json.deal.story),
+      json.deal.items.map((item: DealItem) =>
+        DealItemsController.insertOrUpdate(json.deal.id, item)
+      ),
     ]);
     res.status(200).send();
   } catch (err) {
