@@ -12,7 +12,7 @@ const app = express();
 
 app.get("/health-check", HealthController.healthCheck);
 app.get("/deals/current", DealsController.getCurrent);
-app.patch("/deals/current", DealsController.updateCurrentDealInDatabase);
+app.put("/deals/current", DealsController.updateCurrentDealInDatabase);
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}...`);

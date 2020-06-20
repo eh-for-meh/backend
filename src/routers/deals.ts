@@ -12,14 +12,8 @@ export const getCurrent = async (_: Request, res: Response) => {
     return;
   }
   try {
-    const response = await fetch(`${MEH_API_URL}?apikey=${MEH_API_KEY}`);
-    if (response.status !== 200) {
-      throw response;
-    }
-    const json = (await response.json()) as MehAPIResponse;
-    await DealsController.insertOrUpdate(json.deal);
-    // TODO: write other json to database
-    res.status(200).json(json);
+    const deal = await DealsController.getCurrent();
+    res.status(200).json(deal);
   } catch (err) {
     console.error("[DEAL] getCurrent:", err);
     res.status(500).send();
