@@ -3,6 +3,8 @@ CREATE TABLE deals (
   id VARCHAR(18) PRIMARY KEY NOT NULL UNIQUE,
   created_at TIMESTAMP DEFAULT now(),
   features TEXT NOT NULL,
+  maximum_purchase_count INTEGER NOT NULL,
+  minimum_purchase_count INTEGER NOT NULL,
   photo_urls TEXT[] NOT NULL,
   sold_out_at TIMESTAMP,
   specifications TEXT NOT NULL,

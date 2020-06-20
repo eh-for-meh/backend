@@ -2,6 +2,8 @@ SELECT
   deals.created_at,
   deals.features,
   deals.id,
+  deals.maximum_purchase_count as "maxPurchaseCount",
+  deals.minimum_purchase_count as "minPurchaseCount",
   deals.photo_urls as photos,
   deals.sold_out_at as "soldOutAt",
   deals.specifications,

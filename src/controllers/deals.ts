@@ -30,6 +30,10 @@ const dataToDeal = async (data: any): Promise<Deal> => {
     id: data.id,
     items: values[0],
     photos: data.photos,
+    purchaseQuantity: {
+      maximumLimit: data.maxPurchaseCount,
+      minimumLimit: data.minPurchaseCount
+    },
     soldOutAt: data.sold_out_at,
     specifications: data.specifications,
     theme: {
@@ -92,6 +96,8 @@ export const insertOrUpdate = async (deal: Deal): Promise<unknown[]> => {
         toTimestamp(deal.created_at),
         deal.features.toString(),
         deal.url,
+        deal.purchaseQuantity.maximumLimit || -1,
+        deal.purchaseQuantity.minimumLimit || -1,
         deal.photos,
         toTimestamp(deal.soldOutAt),
         deal.specifications,

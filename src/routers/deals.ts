@@ -60,8 +60,8 @@ export const updateCurrentDealInDatabase = async (
     }
     const json = (await response.json()) as MehAPIResponse;
     json.deal.created_at = new Date().toISOString();
+    await DealsController.insertOrUpdate(json.deal);
     await Promise.all([
-      DealsController.insertOrUpdate(json.deal),
       DealThemesController.insertOrUpdate(json.deal.id, json.deal.theme),
       DealStoriesController.insertOrUpdate(json.deal.id, json.deal.story),
       json.deal.items.map((item: DealItem) =>
