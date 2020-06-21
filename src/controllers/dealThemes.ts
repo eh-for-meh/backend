@@ -1,6 +1,5 @@
 import fs from "fs";
 import path from "path";
-import { QueryResult } from "pg";
 import { getClient } from "./database";
 import { DealTheme } from "../lib/types";
 
@@ -14,23 +13,12 @@ export const insertOrUpdate = async (
   theme: DealTheme
 ): Promise<void> => {
   const client = await getClient();
-  return new Promise((resolve, reject) => {
-    client.query(
-      insertOrUpdateDealThemeSQL,
-      [
-        theme.accentColor,
-        theme.backgroundColor,
-        theme.backgroundImage,
-        dealId,
-        theme.foreground,
-      ],
-      (err: Error, _: QueryResult) => {
-        client.release(true);
-        if (err) {
-          reject(err);
-        }
-        resolve();
-      }
-    );
-  });
+  await client.query(insertOrUpdateDealThemeSQL, [
+    theme.accentColor,
+    theme.backgroundColor,
+    theme.backgroundImage,
+    dealId,
+    theme.foreground,
+  ]);
+  await client.release();
 };

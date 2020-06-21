@@ -1,6 +1,5 @@
 import fs from "fs";
 import path from "path";
-import { QueryResult } from "pg";
 import { getClient } from "./database";
 import { DealItem } from "../lib/types";
 
@@ -15,29 +14,18 @@ const insertOrUpdateDealItemSQL: string = fs.readFileSync(
 
 export const getForDeal = async (dealId: string): Promise<DealItem[]> => {
   const client = await getClient();
-  return new Promise((resolve, reject) => {
-    client.query(
-      getDealItemsSQL,
-      [dealId],
-      async (err: Error, result: QueryResult) => {
-        client.release(true);
-        if (err) {
-          reject(err);
-        }
-        const items: DealItem[] = result.rows.map((row: any) => {
-          return {
-            attributes: row.attributes.map((attribute: string) =>
-              JSON.parse(attribute)
-            ),
-            condition: row.condition,
-            id: row.id,
-            photo: row.photo_url,
-            price: row.price,
-          };
-        });
-        resolve(items);
-      }
-    );
+  const result = await client.query(getDealItemsSQL, [dealId]);
+  client.release();
+  return result.rows.map((row: any) => {
+    return {
+      attributes: row.attributes.map((attribute: string) =>
+        JSON.parse(attribute)
+      ),
+      condition: row.condition,
+      id: row.id,
+      photo: row.photo_url,
+      price: row.price,
+    };
   });
 };
 
@@ -46,24 +34,13 @@ export const insertOrUpdate = async (
   item: DealItem
 ): Promise<void> => {
   const client = await getClient();
-  return new Promise((resolve, reject) => {
-    client.query(
-      insertOrUpdateDealItemSQL,
-      [
-        item.attributes.map((attribute) => JSON.stringify(attribute)),
-        item.condition,
-        item.id,
-        dealId,
-        item.photo,
-        item.price,
-      ],
-      (err: Error, _: QueryResult) => {
-        client.release(true);
-        if (err) {
-          reject(err);
-        }
-        resolve();
-      }
-    );
-  });
+  await client.query(insertOrUpdateDealItemSQL, [
+    item.attributes.map((attribute) => JSON.stringify(attribute)),
+    item.condition,
+    item.id,
+    dealId,
+    item.photo,
+    item.price,
+  ]);
+  client.release();
 };

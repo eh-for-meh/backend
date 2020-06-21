@@ -1,6 +1,5 @@
 import fs from "fs";
 import path from "path";
-import { QueryResult } from "pg";
 import { getClient, toTimestamp } from "./database";
 import { Deal } from "../lib/types";
 import * as DealItemsController from "./dealItems";
@@ -32,7 +31,7 @@ const dataToDeal = async (data: any): Promise<Deal> => {
     photos: data.photos,
     purchaseQuantity: {
       maximumLimit: data.maxPurchaseCount,
-      minimumLimit: data.minPurchaseCount
+      minimumLimit: data.minPurchaseCount,
     },
     soldOutAt: data.sold_out_at,
     specifications: data.specifications,
@@ -54,62 +53,37 @@ const dataToDeal = async (data: any): Promise<Deal> => {
 
 export const getCurrent = async (): Promise<Deal> => {
   const client = await getClient();
-  return new Promise((resolve, reject) => {
-    client.query(getCurrentDealSQL, async (err: Error, result: QueryResult) => {
-      client.release(true);
-      if (err) {
-        reject(err);
-      } else if (result.rowCount === 0) {
-        reject(new Error("No deal found!"));
-      }
-      dataToDeal(result.rows[0]).then(resolve).catch(reject);
-    });
-  });
+  const result = await client.query(getCurrentDealSQL);
+  client.release();
+  if (result.rowCount === 0) {
+    throw new Error("No deal found!");
+  }
+  return dataToDeal(result.rows[0]);
 };
 
 export const getDeal = async (dealId: string): Promise<Deal> => {
   const client = await getClient();
-  return new Promise((resolve, reject) => {
-    client.query(
-      getDealSQL,
-      [dealId],
-      async (err: Error, result: QueryResult) => {
-        client.release(true);
-        if (err) {
-          reject(err);
-        } else if (result.rowCount === 0) {
-          reject(new Error("No deal found!"));
-        }
-        dataToDeal(result.rows[0]).then(resolve).catch(reject);
-      }
-    );
-  });
+  const result = await client.query(getDealSQL, [dealId]);
+  client.release();
+  if (result.rowCount === 0) {
+    throw new Error("No deal found!");
+  }
+  return dataToDeal(result.rows[0]);
 };
 
-export const insertOrUpdate = async (deal: Deal): Promise<unknown[]> => {
+export const insertOrUpdate = async (deal: Deal): Promise<void> => {
   const client = await getClient();
-  return new Promise((resolve, reject) => {
-    client.query(
-      insertOrUpdateCurrentDealSQL,
-      [
-        deal.id,
-        toTimestamp(deal.created_at),
-        deal.features.toString(),
-        deal.url,
-        deal.purchaseQuantity.maximumLimit || -1,
-        deal.purchaseQuantity.minimumLimit || -1,
-        deal.photos,
-        toTimestamp(deal.soldOutAt),
-        deal.specifications,
-        deal.title,
-      ],
-      (err: Error, _: QueryResult) => {
-        client.release(true);
-        if (err) {
-          reject(err);
-        }
-        resolve();
-      }
-    );
-  });
+  await client.query(insertOrUpdateCurrentDealSQL, [
+    deal.id,
+    toTimestamp(deal.created_at),
+    deal.features.toString(),
+    deal.url,
+    deal.purchaseQuantity.maximumLimit || -1,
+    deal.purchaseQuantity.minimumLimit || -1,
+    deal.photos,
+    toTimestamp(deal.soldOutAt),
+    deal.specifications,
+    deal.title,
+  ]);
+  await client.release();
 };

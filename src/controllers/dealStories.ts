@@ -1,6 +1,5 @@
 import fs from "fs";
 import path from "path";
-import { QueryResult } from "pg";
 import { getClient } from "./database";
 import { DealStory } from "../lib/types";
 
@@ -14,17 +13,10 @@ export const insertOrUpdate = async (
   story: DealStory
 ): Promise<void> => {
   const client = await getClient();
-  return new Promise((resolve, reject) => {
-    client.query(
-      insertOrUpdateDealStorySQL,
-      [dealId, story.body, story.title],
-      (err: Error, _: QueryResult) => {
-        client.release(true);
-        if (err) {
-          reject(err);
-        }
-        resolve();
-      }
-    );
-  });
+  await client.query(insertOrUpdateDealStorySQL, [
+    dealId,
+    story.body,
+    story.title,
+  ]);
+  client.release();
 };
