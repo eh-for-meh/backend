@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { getClient } from "./database";
+import { query } from "./database";
 import { DealItem } from "../lib/types";
 
 const getDealItemsSQL: string = fs.readFileSync(
@@ -13,9 +13,7 @@ const insertOrUpdateDealItemSQL: string = fs.readFileSync(
 );
 
 export const getForDeal = async (dealId: string): Promise<DealItem[]> => {
-  const client = await getClient();
-  const result = await client.query(getDealItemsSQL, [dealId]);
-  client.release();
+  const result = await query(getDealItemsSQL, [dealId]);
   return result.rows.map((row: any) => {
     return {
       attributes: row.attributes.map((attribute: string) =>
@@ -33,8 +31,7 @@ export const insertOrUpdate = async (
   dealId: string,
   item: DealItem
 ): Promise<void> => {
-  const client = await getClient();
-  await client.query(insertOrUpdateDealItemSQL, [
+  await query(insertOrUpdateDealItemSQL, [
     item.attributes.map((attribute) => JSON.stringify(attribute)),
     item.condition,
     item.id,
@@ -42,5 +39,4 @@ export const insertOrUpdate = async (
     item.photo,
     item.price,
   ]);
-  client.release();
 };

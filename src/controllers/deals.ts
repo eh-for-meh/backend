@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { getClient, toTimestamp } from "./database";
+import { query, toTimestamp } from "./database";
 import { Deal, DealLaunch } from "../lib/types";
 import * as DealItemsController from "./dealItems";
 import * as TopicsController from "../controllers/topics";
@@ -52,9 +52,7 @@ const dataToDeal = async (data: any): Promise<Deal> => {
 };
 
 export const getCurrent = async (): Promise<Deal> => {
-  const client = await getClient();
-  const result = await client.query(getCurrentDealSQL);
-  client.release();
+  const result = await query(getCurrentDealSQL);
   if (result.rowCount === 0) {
     throw new Error("No deal found!");
   }
@@ -62,9 +60,7 @@ export const getCurrent = async (): Promise<Deal> => {
 };
 
 export const getDeal = async (dealId: string): Promise<Deal> => {
-  const client = await getClient();
-  const result = await client.query(getDealSQL, [dealId]);
-  client.release();
+  const result = await query(getDealSQL, [dealId]);
   if (result.rowCount === 0) {
     throw new Error("No deal found!");
   }
@@ -72,7 +68,6 @@ export const getDeal = async (dealId: string): Promise<Deal> => {
 };
 
 export const insertOrUpdate = async (deal: Deal): Promise<void> => {
-  const client = await getClient();
   const launches: DealLaunch[] = deal.launches || [];
   const launchThatSoldOut = launches.find(
     (launch) =>
@@ -81,7 +76,7 @@ export const insertOrUpdate = async (deal: Deal): Promise<void> => {
       launch.soldOutAt.length > 0
   );
   const { soldOutAt = undefined } = launchThatSoldOut || {};
-  await client.query(insertOrUpdateCurrentDealSQL, [
+  await query(insertOrUpdateCurrentDealSQL, [
     deal.id,
     toTimestamp(deal.created_at),
     deal.features.toString(),
@@ -93,5 +88,4 @@ export const insertOrUpdate = async (deal: Deal): Promise<void> => {
     deal.specifications,
     deal.title,
   ]);
-  await client.release();
 };

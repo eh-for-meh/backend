@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { getClient } from "./database";
+import { query } from "./database";
 import { DealStory } from "../lib/types";
 
 const insertOrUpdateDealStorySQL: string = fs.readFileSync(
@@ -12,11 +12,9 @@ export const insertOrUpdate = async (
   dealId: string,
   story: DealStory
 ): Promise<void> => {
-  const client = await getClient();
-  await client.query(insertOrUpdateDealStorySQL, [
+  await query(insertOrUpdateDealStorySQL, [
     dealId,
     story.body,
     story.title,
   ]);
-  client.release();
 };

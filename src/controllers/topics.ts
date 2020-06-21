@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { getClient } from "./database";
+import { query } from "./database";
 import { Topic } from "../lib/types";
 
 const getTopicForDealSQL: string = fs.readFileSync(
@@ -13,9 +13,7 @@ const insertOrUpdateTopicSQL: string = fs.readFileSync(
 );
 
 export const getForDeal = async (dealId: string): Promise<Topic> => {
-  const client = await getClient();
-  const result = await client.query(getTopicForDealSQL, [dealId]);
-  client.release();
+  const result = await query(getTopicForDealSQL, [dealId]);
   if (result.rowCount === 0) {
     throw new Error("No deal topic found!");
   }
@@ -34,8 +32,7 @@ export const insertOrUpdate = async (
   relationship: { dealId?: string; pollId?: string; videoId?: string },
   topic: Topic
 ): Promise<void> => {
-  const client = await getClient();
-  await client.query(insertOrUpdateTopicSQL, [
+  await query(insertOrUpdateTopicSQL, [
     topic.id,
     topic.commentCount,
     topic.createdAt,
@@ -46,5 +43,4 @@ export const insertOrUpdate = async (
     relationship.videoId || null,
     topic.voteCount,
   ]);
-  client.release(true);
 };

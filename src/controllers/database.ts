@@ -1,4 +1,4 @@
-import { Pool, PoolClient } from "pg";
+import { Pool, PoolClient, QueryResult } from "pg";
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -10,9 +10,18 @@ const pool = new Pool({
   },
 });
 
-export const getClient = async (): Promise<PoolClient> => {
+export const query = async (
+  queryString: string,
+  queryValues?: any[]
+): Promise<QueryResult> => {
   const client = await pool.connect();
-  return client;
+  try {
+    return await client.query(queryString, queryValues);
+  } catch (err) {
+    throw err;
+  } finally {
+    await client.release();
+  }
 };
 
 export const toTimestamp = (date_string?: string): string | null => {

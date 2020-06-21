@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { Details } from "express-useragent";
-import { getClient } from "./database";
+import { query } from "./database";
 
 const insertRouteLogSQL: string = fs.readFileSync(
   path.join(__dirname, "../../sql/insertRouteLog.sql"),
@@ -14,8 +14,7 @@ export const insertRouteLog = async (
   useragent: Details
 ) => {
   const { browser, version, os, platform, source } = useragent;
-  const client = await getClient();
-  await client.query(insertRouteLogSQL, [
+  await query(insertRouteLogSQL, [
     path,
     method,
     browser,
@@ -24,5 +23,4 @@ export const insertRouteLog = async (
     platform,
     source,
   ]);
-  client.release();
 };

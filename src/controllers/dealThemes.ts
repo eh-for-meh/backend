@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { getClient } from "./database";
+import { query } from "./database";
 import { DealTheme } from "../lib/types";
 
 const insertOrUpdateDealThemeSQL: string = fs.readFileSync(
@@ -12,13 +12,11 @@ export const insertOrUpdate = async (
   dealId: string,
   theme: DealTheme
 ): Promise<void> => {
-  const client = await getClient();
-  await client.query(insertOrUpdateDealThemeSQL, [
+  await query(insertOrUpdateDealThemeSQL, [
     theme.accentColor,
     theme.backgroundColor,
     theme.backgroundImage,
     dealId,
     theme.foreground,
   ]);
-  await client.release();
 };
