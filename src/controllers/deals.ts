@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { getClient, toTimestamp } from "./database";
-import { Deal } from "../lib/types";
+import { Deal, DealLaunch } from "../lib/types";
 import * as DealItemsController from "./dealItems";
 import * as TopicsController from "../controllers/topics";
 
@@ -33,7 +33,7 @@ const dataToDeal = async (data: any): Promise<Deal> => {
       maximumLimit: data.maxPurchaseCount,
       minimumLimit: data.minPurchaseCount,
     },
-    soldOutAt: data.sold_out_at,
+    soldOutAt: data.soldOutAt,
     specifications: data.specifications,
     theme: {
       accentColor: data.accentColor,
@@ -73,6 +73,14 @@ export const getDeal = async (dealId: string): Promise<Deal> => {
 
 export const insertOrUpdate = async (deal: Deal): Promise<void> => {
   const client = await getClient();
+  const launches: DealLaunch[] = deal.launches || [];
+  const launchThatSoldOut = launches.find(
+    (launch) =>
+      launch.soldOutAt !== undefined &&
+      launch.soldOutAt !== null &&
+      launch.soldOutAt.length > 0
+  );
+  const { soldOutAt = undefined } = launchThatSoldOut || {};
   await client.query(insertOrUpdateCurrentDealSQL, [
     deal.id,
     toTimestamp(deal.created_at),
@@ -81,7 +89,7 @@ export const insertOrUpdate = async (deal: Deal): Promise<void> => {
     deal.purchaseQuantity.maximumLimit || -1,
     deal.purchaseQuantity.minimumLimit || -1,
     deal.photos,
-    toTimestamp(deal.soldOutAt),
+    toTimestamp(soldOutAt),
     deal.specifications,
     deal.title,
   ]);

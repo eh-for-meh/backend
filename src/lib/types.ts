@@ -3,6 +3,7 @@ export type Deal = {
   features: string;
   id: string;
   items: DealItem[];
+  launches?: DealLaunch[];
   photos: string[];
   purchaseQuantity?: {
     maximumLimit?: number;
@@ -23,6 +24,10 @@ export type DealItem = {
   id: string;
   photo: string;
   price: number;
+};
+
+export type DealLaunch = {
+  soldOutAt?: string;
 };
 
 export type DealTheme = {
